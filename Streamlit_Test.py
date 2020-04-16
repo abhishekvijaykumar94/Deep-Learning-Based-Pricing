@@ -140,6 +140,22 @@ def Longstaff_Schwartz(S0, K, r, q, sigma, T, N, n):
         alpha = -Corr_coef * (np.std(price1) / np.std(Average_Payoff_Antithetic))
     price2 = price2 + alpha * (Average_Payoff_Antithetic - Average_Black_Scholes_price)
     price = (price2 + price1) / 2
+    time_points = None
+    Cash_Flow_1 = None
+    Cash_Flow_2 = None
+    Cash_Flow = None
+    price = None
+    Average_Payoff = None
+    Average_Payoff_Antithetic = None
+    payoff_vector = None
+    Simulated_Prices_Antithetic = None
+    Simulated_Prices = None
+    z = None
+    z1 = None
+    S = None
+    continuation_vector = None
+    gc.collect()
+    caching.clear_cache()
     return (np.mean(price), np.std(price, ddof=1) / np.sqrt(n))
 
 def Regression_Function(St, K, DCF):
@@ -197,6 +213,18 @@ def MC_AO_AN_CV_ST(S0, K, r, sigma, T, n, Numer_of_Periods):
         alpha_A = -Corr_coef_A * (np.std(Average_Payoff_A) / np.std(Geometric_Option_Prices_A))
     Average_Payoff_A = Average_Payoff_A + alpha_A * (Geometric_Option_Prices_A - Average_Geometric_Price)
     Average_Payoff = np.mean([Average_Payoff, Average_Payoff_A], axis=0)
+    Average_Payoff=None
+    Average_Payoff_A=None
+    Geometric_mean=None
+    Geometric_Option_Prices=None
+    Geometric_mean_A=None
+    Geometric_Option_Prices_A=None
+    Simulated_Prices_A=None
+    Simulated_Prices=None
+    z=None
+    z_A=None
+    gc.collect()
+    caching.clear_cache()
     return (np.mean(Average_Payoff), np.std(Average_Payoff)/np.sqrt(n))
 
 def Put_Option(S, T, sigma, r):
@@ -208,7 +236,8 @@ def Put_Option(S, T, sigma, r):
 value = st.sidebar.selectbox("Select Type of Option", ["European Call Option","American Put Option", "Asian Call Option"])
 
 if (value == "European Call Option"):
-
+    caching.clear_cache()
+    gc.collect()
     x_train,BS_Option_Price=BS_option_accept_user_data()
     if st.button('Price European Call Option'):
 
@@ -237,7 +266,8 @@ if (value == "European Call Option"):
         st.table(dfObj)
 
 elif(value == "American Put Option"):
-
+    caching.clear_cache()
+    gc.collect()
     x_train = american_option_accept_user_data()
     test_size = st.number_input("Enter Number of trials:", key="trials", value=1)
     if st.button('Price American Put Option'):
@@ -267,7 +297,8 @@ elif(value == "American Put Option"):
         st.table(dfObj)
 
 else:
-
+    caching.clear_cache()
+    gc.collect()
     x_train = Asian_Option_accept_user_data()
     test_size = st.number_input("Enter Number of trials:", key="trials", value=1)
     if st.button('Price Asian Call Option'):
@@ -295,5 +326,5 @@ else:
         dfObj = pd.DataFrame(students, columns=['Option Price', 'Time taken in Miliseconds', 'Pricing Error per mil$'],
                              index=['Monte Carlo', 'Neural Network'])
         st.table(dfObj)
-
+        
 
